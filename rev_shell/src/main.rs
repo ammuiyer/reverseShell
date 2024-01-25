@@ -1,6 +1,6 @@
 
-use std::io;
-use std::io::Write;
+use std::io::{self, BufRead};
+use std::io::{Write, BufReader};
 use std::net::{Ipv4Addr, SocketAddrV4, TcpListener, TcpStream, Shutdown};
 use std::process::{Command, exit};
 
@@ -39,7 +39,13 @@ fn main() {
         input.push('\0');
         //add null byte to add as end of string 
 
-        clientsocket.write(&input.as_bytes());
+        clientsocket.write(&mut input.as_bytes());
+
+        let mut buffer:Vec<u8> = Vec::new();
+       let mut reader =  BufReader::new(&clientsocket);
+        reader.read_until(b'\0', &mut buffer);
+
+        
 
         break;
 
